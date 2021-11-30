@@ -10,11 +10,11 @@ public class Utils {
 
     @MostUsed("Python")
     void doStuff(String value){
-        System.out.println("Operationg with:" + value);
+        System.out.println("Operating with:" + value);
     }
 
     void doStuff(int value){
-        System.out.println("Operationg with:" + value);
+        System.out.println("Operating with:" + value);
     }
 
 }
