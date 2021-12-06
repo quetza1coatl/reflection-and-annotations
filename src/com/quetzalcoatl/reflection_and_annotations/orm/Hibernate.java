@@ -20,7 +20,7 @@ public class Hibernate<T> {
     private AtomicLong id = new AtomicLong(0);
 
     private Hibernate() throws SQLException {
-//        con = DriverManager.getConnection("");
+        con = DriverManager.getConnection("jdbc:h2:D:\\Projects\\reflection-and-annotations\\database\\h2-hib", "sa", "");
     }
 
 
@@ -68,8 +68,6 @@ public class Hibernate<T> {
                 preparedStatement.setInt(index++, (int) column.get(t));
             } else if(column.getType() == String.class){
                 preparedStatement.setString(index++, (String) column.get(t));
-            } else if(column.getType() == double.class){
-                preparedStatement.setDouble(index++, (Double) column.get(t));
             }
         }
         preparedStatement.execute();

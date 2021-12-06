@@ -17,11 +17,11 @@ public class TransactionHistory {
     private String transactionType;
 
     @Column
-    private double amount;
+    private Integer amount;
 
     public TransactionHistory(){}
 
-    public TransactionHistory(Integer accountNumber, String name, String transactionType, double amount) {
+    public TransactionHistory(Integer accountNumber, String name, String transactionType, Integer amount) {
         this.accountNumber = accountNumber;
         this.name = name;
         this.transactionType = transactionType;
@@ -61,11 +61,11 @@ public class TransactionHistory {
         this.transactionType = transactionType;
     }
 
-    public double getAmount() {
+    public Integer getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(Integer amount) {
         this.amount = amount;
     }
 

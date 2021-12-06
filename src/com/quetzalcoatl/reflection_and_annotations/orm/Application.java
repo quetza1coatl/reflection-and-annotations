@@ -10,5 +10,7 @@ public class Application {
 
         Hibernate<TransactionHistory> hibernate = Hibernate.getConnection();
         hibernate.write(jackHistory);
+        hibernate.write(samanthaHistory);
+        hibernate.write(wotanHistory);
     }
 }
