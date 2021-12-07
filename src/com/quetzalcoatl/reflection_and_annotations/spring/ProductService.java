@@ -1,9 +1,12 @@
 package com.quetzalcoatl.reflection_and_annotations.spring;
 
+import com.quetzalcoatl.reflection_and_annotations.spring.annotations.Autowired;
+
 import java.util.List;
 
 public class ProductService {
-    private ProductRepository repo = new ProductRepository();
+    @Autowired
+    private ProductRepository repo;
 
     public List<Product> getFinalPrice(List<Product> items){
         List<Product> list = repo.getPrice(items);
