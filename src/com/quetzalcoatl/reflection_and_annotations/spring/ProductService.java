@@ -1,9 +1,11 @@
 package com.quetzalcoatl.reflection_and_annotations.spring;
 
 import com.quetzalcoatl.reflection_and_annotations.spring.annotations.Autowired;
+import com.quetzalcoatl.reflection_and_annotations.spring.annotations.Component;
 
 import java.util.List;
 
+@Component
 public class ProductService {
     @Autowired
     private ProductRepository repo;

@@ -1,5 +1,55 @@
 package com.quetzalcoatl.reflection_and_annotations.spring;
 
-public class ApplicationContext {
+import com.quetzalcoatl.reflection_and_annotations.spring.annotations.Component;
+import com.quetzalcoatl.reflection_and_annotations.spring.annotations.ComponentScan;
+import com.quetzalcoatl.reflection_and_annotations.spring.annotations.Configuration;
 
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
+
+public class ApplicationContext {
+    // context with class object - instances of classes
+    private static Map<Class<?>, Object> context = new HashMap<>();
+
+    public ApplicationContext(Class<AppConfig> clazz) {
+        Spring.initializeSpringContext(clazz);
+    }
+
+    private static class Spring{
+
+        private static void initializeSpringContext(Class<?> clazz) {
+            if(!clazz.isAnnotationPresent(Configuration.class)){
+                throw new RuntimeException("File is not a configuration file: " + clazz.getSimpleName());
+            }else{
+                ComponentScan annotation = clazz.getAnnotation(ComponentScan.class);
+                String value = annotation.value();
+                //TODO make it more independent
+                String packageStructure = "D:\\Projects\\reflection-and-annotations\\out\\production\\reflection-and-annotations\\" + value.replace(".", "\\");
+                File[] files = findClasses(new File(packageStructure));
+
+                for(File file : files){
+                    String name = value + "." + file.getName().replace(".class", "");
+                    try {
+                        Class<?> loadedClass = Class.forName(name);
+                        if(loadedClass.isAnnotationPresent(Component.class)){
+                            Constructor<?> constructor = loadedClass.getConstructor();
+                            Object newInstance = constructor.newInstance();
+                            context.put(loadedClass, newInstance);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        private static File[] findClasses(File file){
+            if(!file.exists()){
+                throw new RuntimeException("Package " + file + " doesn't exist.");
+            }
+            return file.listFiles(f -> f.getName().endsWith(".class"));
+        }
+    }
 }

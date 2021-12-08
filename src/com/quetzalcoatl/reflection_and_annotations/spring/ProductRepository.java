@@ -1,7 +1,10 @@
 package com.quetzalcoatl.reflection_and_annotations.spring;
 
+import com.quetzalcoatl.reflection_and_annotations.spring.annotations.Component;
+
 import java.util.List;
 
+@Component
 public class ProductRepository {
 
     public List<Product> getPrice(List<Product> items) {
