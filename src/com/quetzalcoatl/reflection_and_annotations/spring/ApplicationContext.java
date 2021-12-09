@@ -1,11 +1,13 @@
 package com.quetzalcoatl.reflection_and_annotations.spring;
 
+import com.quetzalcoatl.reflection_and_annotations.spring.annotations.Autowired;
 import com.quetzalcoatl.reflection_and_annotations.spring.annotations.Component;
 import com.quetzalcoatl.reflection_and_annotations.spring.annotations.ComponentScan;
 import com.quetzalcoatl.reflection_and_annotations.spring.annotations.Configuration;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,6 +52,28 @@ public class ApplicationContext {
                 throw new RuntimeException("Package " + file + " doesn't exist.");
             }
             return file.listFiles(f -> f.getName().endsWith(".class"));
+        }
+    }
+
+    public <T> T getBean(Class<T> clazz) throws IllegalAccessException {
+        T object = (T) context.get(clazz);
+        Field[] declaredFields = clazz.getDeclaredFields();
+        injectBean(object, declaredFields);
+        return object;
+    }
+
+    private <T> void injectBean(T object, Field[] declaredFields) throws IllegalAccessException {
+        for(Field field : declaredFields){
+            if(field.isAnnotationPresent(Autowired.class)){
+                field.setAccessible(true);
+                Class<?> type = field.getType();
+                Object injectedObject = context.get(type);
+                field.set(object, injectedObject);
+
+                //recursively inject beans
+                Field[] declaredFieldsForInjectedObject = type.getDeclaredFields();
+                injectBean(injectedObject, declaredFieldsForInjectedObject);
+            }
         }
     }
 }
