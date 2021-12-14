@@ -34,6 +34,33 @@ public class MethodHandlesDemo {
         Student student2 = (Student) paramConstructor.invoke("Josh", "C++");
         System.out.println(student2);
 
+        MethodType methodTypeSetName = MethodType.methodType(void.class, String.class);
+        MethodHandle setName = lookup.findVirtual(clazz, "setName", methodTypeSetName);
+        setName.invoke(student2, "Josh_updated");
+        System.out.println(student2);
+
+       // static method
+        MethodType methodTypeSetStatic = MethodType.methodType(void.class, int.class);
+        MethodHandle setNumOfStudents = lookup.findStatic(clazz, "setNumOfStudents", methodTypeSetStatic);
+        setNumOfStudents.invoke(66);
+        System.out.println(Student.getNumOfStudents());
+
+        //fields
+        Lookup privateLookup = MethodHandles.privateLookupIn(clazz, lookup); // Java 9+
+        MethodHandle findNameGetter = privateLookup.findGetter(clazz, "name", String.class);
+        MethodHandle findNameSetter = privateLookup.findSetter(clazz, "name", String.class);
+
+        String name = (String) findNameGetter.invoke(student2);
+        System.out.println(name);
+        findNameSetter.invoke(student, "Billy-20");
+        System.out.println(student.getName());
+
+        //VarHandles (Java 9+)
+        VarHandle courseVarHandle = privateLookup.findVarHandle(clazz, "course", String.class);
+        courseVarHandle.set(student, "Kotlin");
+        String val = (String)courseVarHandle.get();
+        System.out.println(val);
+
 
     }
 }
